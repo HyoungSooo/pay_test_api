@@ -48,6 +48,9 @@ class UserLoginAPI(APIView):
         return response
         
 class LogoutApi(APIView):
+    permission_classes = [
+        permissions.AllowAny 
+    ]
     def get(self, request):
         """
         클라이언트 refreshtoken 쿠키를 삭제함으로 로그아웃처리
