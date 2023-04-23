@@ -12,12 +12,14 @@ docker-compose --env-file .env.dev up --build
 
 ### login
 
-```schema => {  
+```
+schema => {  
   'phone_number': str  
   'password': str  
 }  
 
-endpoint => '/auth/api-jwt-auth/login/'```
+endpoint => '/auth/api-jwt-auth/login/'
+```
 
 사용자의 핸드폰 번호와 비밀번호를 입력받아 jwt토큰을 제공해주는 api입니다. 입력받은 phone_number를 데이터베이스에서 확인해 일치하는 계정의 패스워드와 입력받은 password를 비교하여 인증합니다.
 인증에 성공하면 사용자의 쿠키에 토큰을 저장합니다.
