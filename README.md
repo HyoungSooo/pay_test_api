@@ -49,9 +49,11 @@ response
 
 ### logout
 
-```schema => {}  
+```
+schema => {}  
 
-endpoint => '/auth/api-jwt-auth/logout/'```
+endpoint => '/auth/api-jwt-auth/logout/'
+```
 
 사용자의 쿠키에서 토큰을 지워주는 동작을 하는 api입니다.
 
@@ -68,12 +70,14 @@ response
 
 ### registor
 
-```schema => {  
+```
+schema => {  
   'phone_number': str  
   'password': str  
 }  
   
-endpoint => '/auth/api-jwt-auth/register/'```
+endpoint => '/auth/api-jwt-auth/register/'
+```
   
 휴대폰 번호와 비밀번호를 입력받아 회원가입을 진행합니다. 
 휴대폰 번호의 입력 검증은 다음과 같습니다.
@@ -186,7 +190,8 @@ schma => {
     size : str  
 }
 
-endpoint => POST '/api/product/'  ```
+endpoint => POST '/api/product/'  
+```
 
 response
 
@@ -212,7 +217,8 @@ response
 
 ### 속성 부분수정
 
-```schma => {  
+```
+schma => {  
     category : str not require  
     price : int not require  
     cost : int not require  
@@ -222,7 +228,8 @@ response
     size : str not require  
 }
 
-endpoint => PATCH '/api/product/<int: pk>'```
+endpoint => PATCH '/api/product/<int: pk>'
+```
 
 response
 
@@ -247,9 +254,11 @@ response
 
 ### 상품 삭제
 
-```schma => {}  
+```
+schma => {}  
 
-endpoint => DELETE '/api/product/<int: pk>'```
+endpoint => DELETE '/api/product/<int: pk>'
+```
 
 response
 ```
@@ -300,9 +309,11 @@ response
 
 ### 상품 상세 내역
 
-```schma => {}  
+```
+schma => {}  
 
-endpoint => GET '/api/product/<int:pk>'```
+endpoint => GET '/api/product/<int:pk>'
+```
 
 response 
 ```
@@ -333,9 +344,11 @@ response
 
 ### 이름 기반 검색
 
-```schma => {}  
+```
+schma => {}  
 
-endpoint => GET '/api/product/search/?q=<str:query>'```
+endpoint => GET '/api/product/search/?q=<str:query>'
+```
 
 일반 검색, 초성 검색 모두 지원합니다.
 
