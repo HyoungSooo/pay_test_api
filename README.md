@@ -12,12 +12,12 @@ docker-compose --env-file .env.dev up --build
 
 ### login
 
-schema => {  
+```schema => {  
   'phone_number': str  
   'password': str  
 }  
 
-endpoint => '/auth/api-jwt-auth/login/'
+endpoint => '/auth/api-jwt-auth/login/'```
 
 사용자의 핸드폰 번호와 비밀번호를 입력받아 jwt토큰을 제공해주는 api입니다. 입력받은 phone_number를 데이터베이스에서 확인해 일치하는 계정의 패스워드와 입력받은 password를 비교하여 인증합니다.
 인증에 성공하면 사용자의 쿠키에 토큰을 저장합니다.
@@ -47,9 +47,9 @@ response
 
 ### logout
 
-schema => {}  
+```schema => {}  
 
-endpoint => '/auth/api-jwt-auth/logout/'
+endpoint => '/auth/api-jwt-auth/logout/'```
 
 사용자의 쿠키에서 토큰을 지워주는 동작을 하는 api입니다.
 
@@ -66,12 +66,12 @@ response
 
 ### registor
 
-schema => {  
+```schema => {  
   'phone_number': str  
   'password': str  
 }  
   
-endpoint => '/auth/api-jwt-auth/register/'
+endpoint => '/auth/api-jwt-auth/register/'```
   
 휴대폰 번호와 비밀번호를 입력받아 회원가입을 진행합니다. 
 휴대폰 번호의 입력 검증은 다음과 같습니다.
@@ -172,7 +172,7 @@ save 함수를 오버라이딩해 자동으로 바코드 이미지와 이름의 
 
 
 ### 상품 등록
-
+```
 schma => {  
     category : str  
     price : int  
@@ -184,7 +184,7 @@ schma => {
     size : str  
 }
 
-endpoint => POST '/api/product/'  
+endpoint => POST '/api/product/'  ```
 
 response
 
@@ -210,7 +210,7 @@ response
 
 ### 속성 부분수정
 
-schma => {  
+```schma => {  
     category : str not require  
     price : int not require  
     cost : int not require  
@@ -220,7 +220,7 @@ schma => {
     size : str not require  
 }
 
-endpoint => PATCH '/api/product/<int: pk>'
+endpoint => PATCH '/api/product/<int: pk>'```
 
 response
 
@@ -245,9 +245,9 @@ response
 
 ### 상품 삭제
 
-schma => {}  
+```schma => {}  
 
-endpoint => DELETE '/api/product/<int: pk>'
+endpoint => DELETE '/api/product/<int: pk>'```
 
 response
 ```
@@ -262,9 +262,9 @@ response
 
 ### 리스트
 
-schma => {}  
+```schma => {}  
 
-endpoint => GET '/api/product/'
+endpoint => GET '/api/product/'```
 
 cursor based pagination 기반으로 구현했습니다. django-rest-framework의 CursorPagination를 상속받아 구현했습니다.
 
@@ -298,9 +298,9 @@ response
 
 ### 상품 상세 내역
 
-schma => {}  
+```schma => {}  
 
-endpoint => GET '/api/product/<int:pk>'
+endpoint => GET '/api/product/<int:pk>'```
 
 response 
 ```
@@ -331,9 +331,9 @@ response
 
 ### 이름 기반 검색
 
-schma => {}  
+```schma => {}  
 
-endpoint => GET '/api/product/search/?q=<str:query>'
+endpoint => GET '/api/product/search/?q=<str:query>'```
 
 일반 검색, 초성 검색 모두 지원합니다.
 
