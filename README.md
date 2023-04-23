@@ -1,18 +1,38 @@
 # pay_test_api
 
-```
+```shell
 git clone <repositry>
 
 docker-compose --env-file .env.dev up --build
 
 ```
 
+테스트 데이터는 runserver 실행 이전에 자동으로 생성되어집니다.
+
+```python
+class Command(BaseCommand):
+    help = '샘플 데이터베이스 생성'
+
+    def handle(self, *args, **options):
+        try:
+          with open('/usr/src/app/sample_data.json', 'r') as file:
+              data = json.load(file)
+
+          for payload in data:
+              Product.objects.create(**payload)
+
+          self.stdout.write(self.style.SUCCESS(f'Successfully create sample data {Product.objects.count()}'))
+        except :
+            self.stdout.write(self.style.SUCCESS('call for once'))
+```
+
+
 요구사항
 
 
 ### login
 
-```
+```s
 schema => {  
   'phone_number': str  
   'password': str  
@@ -25,7 +45,7 @@ endpoint => '/auth/api-jwt-auth/login/'
 인증에 성공하면 사용자의 쿠키에 토큰을 저장합니다.
 
 response
-```
+```json
 {
     "meta": {
         "code": 400,
@@ -40,8 +60,8 @@ response
         "message": "ok"
     },
     "data": {
-        "access_token": <token>,
-        "refresh_token": <token>
+        "access_token": "<token>",
+        "refresh_token": "<token>"
     }
 }
 
@@ -49,7 +69,7 @@ response
 
 ### logout
 
-```
+```s
 schema => {}  
 
 endpoint => '/auth/api-jwt-auth/logout/'
@@ -58,7 +78,7 @@ endpoint => '/auth/api-jwt-auth/logout/'
 사용자의 쿠키에서 토큰을 지워주는 동작을 하는 api입니다.
 
 response
-```
+```json
 {
     "meta": {
         "code": 202,
@@ -70,7 +90,7 @@ response
 
 ### registor
 
-```
+```s
 schema => {  
   'phone_number': str  
   'password': str  
@@ -82,7 +102,7 @@ endpoint => '/auth/api-jwt-auth/register/'
 휴대폰 번호와 비밀번호를 입력받아 회원가입을 진행합니다. 
 휴대폰 번호의 입력 검증은 다음과 같습니다.
 
-```
+```python
 def validate_phone(phone_num):
     # 입력된 번호에서 공백 제거
     phone_number = phone_num.replace(" ", "")
@@ -105,7 +125,7 @@ def validate_phone(phone_num):
 ```
 휴대폰 번호가 010,011등 국내 이동통신사의 번호인지, 각 자리수가 3~4인지를 확인합니다.
 
-```
+```python
 class UserManager(BaseUserManager):
     ...
 
@@ -127,7 +147,7 @@ class UserManager(BaseUserManager):
 비밀번호는 django 내장함수인 set_password()를 활용해 hash함수가 적용된 값으로 저장합니다.
 
 response
-```
+```json
 {
     "meta": {
         "code": 201,
@@ -138,7 +158,7 @@ response
 ```
 
 ### Product schma
-```
+```python
 class Product(models.Model):
     category = models.CharField(max_length=30)
     price = models.IntegerField()
@@ -178,7 +198,7 @@ save 함수를 오버라이딩해 자동으로 바코드 이미지와 이름의 
 
 
 ### 상품 등록
-```
+```s
 schma => {  
     category : str  
     price : int  
@@ -195,7 +215,7 @@ endpoint => POST '/api/product/'
 
 response
 
-```
+```json
 {
     "meta": {
         "code": 201,
@@ -217,7 +237,7 @@ response
 
 ### 속성 부분수정
 
-```
+```s
 schma => {  
     category : str not require  
     price : int not require  
@@ -233,7 +253,7 @@ endpoint => PATCH '/api/product/<int: pk>'
 
 response
 
-```
+```json
 {
     "meta": {
         "code": 201,
@@ -254,14 +274,14 @@ response
 
 ### 상품 삭제
 
-```
+```s
 schma => {}  
 
 endpoint => DELETE '/api/product/<int: pk>'
 ```
 
 response
-```
+```json
 {
     "meta": {
         "code": 200,
@@ -273,14 +293,16 @@ response
 
 ### 리스트
 
-```schma => {}  
+```s
+schma => {}  
 
-endpoint => GET '/api/product/'```
+endpoint => GET '/api/product/'
+```
 
 cursor based pagination 기반으로 구현했습니다. django-rest-framework의 CursorPagination를 상속받아 구현했습니다.
 
 response
-```
+```json
 {
     "meta": {
         "code": 200,
@@ -309,14 +331,14 @@ response
 
 ### 상품 상세 내역
 
-```
+```s
 schma => {}  
 
 endpoint => GET '/api/product/<int:pk>'
 ```
 
 response 
-```
+```json
 {
     "meta": {
         "code": 200,
@@ -344,7 +366,7 @@ response
 
 ### 이름 기반 검색
 
-```
+```s
 schma => {}  
 
 endpoint => GET '/api/product/search/?q=<str:query>'
@@ -352,7 +374,7 @@ endpoint => GET '/api/product/search/?q=<str:query>'
 
 일반 검색, 초성 검색 모두 지원합니다.
 
-```
+```python
 class ProductSearchView(APIView):
 
     ...
@@ -387,7 +409,7 @@ django orm을 활용해 LIKE 검색을 구현했습니다. 초성으로 미리 �
 
 ### 접근제한
 
-```
+```python
 REST_FRAMEWORK = {
     ...
 
@@ -401,4 +423,10 @@ REST_FRAMEWORK = {
 ```
 
 로그인, 로그아웃 회원가입을 제외한 모든 api는 접근제한이 설정되었습니다.
+
+인증이 필요한 api의 경우 http header에 Authorization필드를 추가해야 합니다.
+
+```shell
+curl http://127.0.0.1:8000/api/product/ -H 'Authorization: Bearer <token>'
+```
 

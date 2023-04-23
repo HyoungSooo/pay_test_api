@@ -20,6 +20,10 @@ class CreateUserView(CreateAPIView):
     ]
     serializer_class = UserSerializer
 
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return create_response_msg(status.HTTP_201_CREATED, 'ok')
+
 class UserLoginAPI(APIView):
     permission_classes = [
         permissions.AllowAny 
