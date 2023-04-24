@@ -1,11 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
-from django.contrib.auth.hashers import make_password, is_password_usable
 from account.utils import validate_phone
 from django.contrib.auth.base_user import BaseUserManager
-import time
 
 class UserManager(BaseUserManager):
     def create_user(self, phone_number, password, **extra_fields):

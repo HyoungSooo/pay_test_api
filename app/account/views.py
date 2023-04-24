@@ -1,8 +1,8 @@
-from rest_framework import permissions, authentication
+from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import CreateAPIView
-from django.contrib.auth import get_user_model # If used custom user model
+from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import check_password
 from rest_framework.views import APIView
@@ -30,8 +30,8 @@ class UserLoginAPI(APIView):
     ]
     serializer_class = UserLoginSerializer
     def post(self, request):
-        phone_number = request.data['phone_number']
-        password = request.data['password']
+        phone_number = request.data.get('phone_number',None)
+        password = request.data.get('password',None)
 
         user = get_user_model().objects.filter(phone_number=phone_number).first()
 

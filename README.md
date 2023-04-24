@@ -427,6 +427,5 @@ REST_FRAMEWORK = {
 인증이 필요한 api의 경우 http header에 Authorization필드를 추가해야 합니다.
 
 ```shell
-curl http://127.0.0.1:8000/api/product/ -H 'Authorization: Bearer <token>'
+curl http://127.0.0.1:8000/api/product/ -H 'Authorization: Bearer <access_token>'
 ```
-

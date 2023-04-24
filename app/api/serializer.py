@@ -1,9 +1,5 @@
 from rest_framework import serializers
-from rest_framework.settings import api_settings
 from .models import Product, SIZE
-from rest_framework import status
-from core.utils import create_response_msg
-
 
 class ProductSerializer(serializers.ModelSerializer):
 
