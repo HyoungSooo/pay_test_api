@@ -312,7 +312,9 @@ response
         "next": "http://127.0.0.1:8000/api/product/?cursor=cD0xMA%3D%3D",
         "previous": null,
         "results": [
+
             ...
+
             {
                 "category": "음료",
                 "name": "연유 라떼",
@@ -323,7 +325,9 @@ response
                 "expiration_date": "2023-04-30T13:26:47+09:00",
                 "barcode": "/images/%EC%97%B0%EC%9C%A0%EB%9D%BC%EB%96%BC.png"
             },
+
             ...
+            
         ]
     }
 }
@@ -429,3 +433,5 @@ REST_FRAMEWORK = {
 ```shell
 curl http://127.0.0.1:8000/api/product/ -H 'Authorization: Bearer <access_token>'
 ```
+
+모든 api에 대한 테스트 코드 작성되어있습니다.
