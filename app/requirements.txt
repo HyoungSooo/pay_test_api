@@ -8,3 +8,5 @@ djangorestframework-simplejwt
 Pillow
 drf-yasg 
 python-barcode
+django-ninja
+drf-spectacular

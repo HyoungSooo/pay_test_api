@@ -8,7 +8,7 @@ from django.db.models import Q
 import datetime
 
 from rest_framework.test import APIClient
-from api.models import Product
+from api.models import Product,Category
 import os
 
 TOKEN_URL = reverse('account:login')
@@ -22,13 +22,11 @@ def product_patch_or_get_delete_url(product_id):
 
 def create_object(**payload):
     default = {
-        'category' : '음료',
+        'user': get_user_model().objects.first(),
+        'category' : Category.objects.get_or_create(category = '음료')[0],
         'name' : '테스트음료',
         'price' : 10000,
-        'cost' : 5000,
         'des' : '테스트설명',
-        'size' : 'B',
-        "expiration_date": "2023-04-22T13:26:47+09:00"
     }
     default.update(payload)
 
@@ -36,24 +34,23 @@ def create_object(**payload):
 
 class ModelTest(TestCase):
     
-    def test_barcode_generate_function(self):
-        '''Test automatically creates a barcode image when instance is saved'''
-        payload = {
-            'name' : 'isok'
-        }
-        obj = create_object(**payload)
-        
-        self.assertTrue(os.path.isfile(f'/usr/src/app/images/{obj.name}.png'))
-        self.assertNotEqual('', obj.barcode)
-
-        os.remove(f'/usr/src/app/images/{obj.name}.png')
-    
     def test_korean_initial_is_maked(self):
         '''Test automatically creates a initial when instance is saved'''
         name_list = ['테스트', '테a스트', 'test임', 't테es스t트']
 
+        payload = {
+            'phone_number': '010-1112-8657',
+            'password': 'testpassword',
+        }
+
+        user = get_user_model().objects.create_user(
+            **payload
+        )
+
         for name in name_list:
             payload = {
+                'user' : user,
+                'category' : Category.objects.get_or_create(category = '음료')[0],
                 'name' : name
             }
 
@@ -62,24 +59,21 @@ class ModelTest(TestCase):
             self.assertTrue(obj.initial_set)
             self.assertEqual(''.join(korean_to_be_initial(name)), obj.initial_set)
 
-            os.remove(f'/usr/src/app/images/{obj.name}.png')
-
 
 class PublicUserApiTests(TestCase):
     """Test the users API (unauthenticated)"""
+    maxDiff = 100000
 
     def setUp(self):
         self.client = APIClient()
 
     def test_auth_require_to_patch_or_get_url(self):
         '''Test unautenticated user will return 401'''
-        content = create_object()
         res = self.client.get(product_patch_or_get_delete_url(1))
 
         self.assertEqual(res.status_code, 401)
         
         payload = {
-            'category' : 3,
             'name' : '조지아 크래프트 커피'
         }
 
@@ -92,11 +86,8 @@ class PublicUserApiTests(TestCase):
 
         self.assertEqual(res.status_code, 401)
 
-        os.remove(f'/usr/src/app/images/{content.name}.png')
     
     def test_auth_require_to_create_view_list(self):
-        content = create_object()
-
         res = self.client.get(PRODUCT_URL)
         
         self.assertEqual(res.status_code, 401)
@@ -105,7 +96,6 @@ class PublicUserApiTests(TestCase):
 
         self.assertEqual(res.status_code, 401)
 
-        os.remove(f'/usr/src/app/images/{content.name}.png')
     
     def test_auth_require_search_api(self):
         res = self.client.get(SEARCH_URL + '?q=content')
@@ -139,8 +129,8 @@ class PrivateProductApiTests(TestCase):
     def test_get_product_detail(self):
         '''Test detail api is worked'''
         payload = {
+            'user' : get_user_model().objects.first(),
             'name' : 'success',
-            'category' : 'get ok'
         }
         content = create_object(**payload)
 
@@ -149,9 +139,8 @@ class PrivateProductApiTests(TestCase):
         self.assertEqual(res.status_code, 200)
 
         self.assertEqual(res.data['data'].get('name'), 'success')
-        self.assertEqual(res.data['data'].get('category'), 'get ok')
+        self.assertEqual(res.data['data'].get('category'), '음료')
 
-        os.remove(f'/usr/src/app/images/{content.name}.png')
     
     def test_patch_product(self):
         '''Test patch api is worked
@@ -162,7 +151,8 @@ class PrivateProductApiTests(TestCase):
         res = self.client.get(product_patch_or_get_delete_url(content.id))
 
         payload = {
-            'category' : 'patch ok',
+            'user' : get_user_model().objects.first(),
+            'category' : '과자',
             'name' : 'success',
         }
         
@@ -172,12 +162,6 @@ class PrivateProductApiTests(TestCase):
 
         self.assertNotEqual(res.data['data'].get('name'), patched_res.data['data'].get('name'))
         self.assertNotEqual(res.data['data'].get('category'), patched_res.data['data'].get('category'))
-        res.data['data'].update(**payload)
-
-        self.assertEqual(res.data['data'], patched_res.data['data'])
-
-        os.remove(f'/usr/src/app/images/{content.name}.png')
-        os.remove(f'/usr/src/app/images/{payload["name"]}.png')
 
     def test_delete_product(self):
         '''Test delete api is worked'''
@@ -189,19 +173,15 @@ class PrivateProductApiTests(TestCase):
 
         self.assertEqual(Product.objects.count(), 0)
 
-        os.remove(f'/usr/src/app/images/{content.name}.png')
 
     def test_create_product_api(self):
         '''Test create product data is worked'''
 
         payload = {
-          'category' : '테스트',
+          'category' : '음료',
           'name' : '테스트',
           'price' : 10000,
-          'cost' : 5000,
           'des' : '테스트설명',
-          'size' : 'L',
-          "expiration_date": datetime.datetime(2024, 4, 22, 4, 26, 47, tzinfo=datetime.timezone.utc)
         }
         
         res = self.client.post(PRODUCT_URL, data = payload)
@@ -211,52 +191,25 @@ class PrivateProductApiTests(TestCase):
 
         data = Product.objects.get(name = '테스트')
 
-        os.remove(f'/usr/src/app/images/{payload["name"]}.png')
-
         for i in payload:
+            if i == 'category':
+                self.assertEqual(data.category.category, payload[i])
+                continue
             self.assertEqual(data.__dict__[i], payload[i])
 
-    def test_Reject_when_insufficient_input_is_received_in_create_product_api(self):
+    def test_reject_when_insufficient_input_is_received_in_create_product_api(self):
         checklist = [
             {
-              'category' : '테스트',
-              'name' : '테스트',
-              'price' : 10000,
-              'cost' : 5000,
-              'des' : '테스트설명',
-              'size' : 'B',
-            },
-            {
-              'category' : '테스트',
-              'name' : '테스트',
-              'price' : 10000,
-              'cost' : 5000,
-              'des' : '테스트설명',
-              "expiration_date": datetime.datetime(2024, 4, 22, 4, 26, 47, tzinfo=datetime.timezone.utc)
-            },
-            {
-              'category' : '테스트',
-              'name' : '테스트',
-              'price' : 10000,
-              'cost' : 5000,
-              'size' : 'B',
-              "expiration_date": datetime.datetime(2024, 4, 22, 4, 26, 47, tzinfo=datetime.timezone.utc)
-            },
-            {
-              'category' : '테스트',
               'name' : '테스트',
               'price' : 10000,
               'des' : '테스트설명',
-              'size' : 'B',
-              "expiration_date": datetime.datetime(2024, 4, 22, 4, 26, 47, tzinfo=datetime.timezone.utc)
             },
             {
-              'category' : '테스트',
               'name' : '테스트',
-              'cost' : 5000,
-              'des' : '테스트설명',
-              'size' : 'B',
-              "expiration_date": datetime.datetime(2024, 4, 22, 4, 26, 47, tzinfo=datetime.timezone.utc)
+              'price' : 10000,
+            },
+            {
+              'price' : 10000,
             },
         ]
 
@@ -305,8 +258,6 @@ class PrivateProductApiTests(TestCase):
         self.assertTrue(last_res.data['data']['previous'])
         self.assertEqual(1, len(last_res.data['data']['results']))
 
-        for i in range(97, 118):
-          os.remove(f'/usr/src/app/images/{chr(i)}.png')
 
 
     def test_search_api(self):
@@ -344,8 +295,6 @@ class PrivateProductApiTests(TestCase):
 
         self.assertEqual(len(res.data.get('data')), 2)
 
-        for name in search_list:
-            os.remove(f'/usr/src/app/images/{name.replace(" ", "")}.png')
     def test_search_api_can_return_no_content(self):
         
         search_list = ['슈크림 라떼', '슈크힘 라떼', '슈흐림 라떼', '휴크림 라떼', '슈크함 라떼']
@@ -361,5 +310,30 @@ class PrivateProductApiTests(TestCase):
 
         self.assertEqual(res.status_code, 204)
 
-        for name in search_list:
-            os.remove(f'/usr/src/app/images/{name.replace(" ", "")}.png')
+    def test_other_user_cant_handle_own_product(self):
+        content = create_object()
+
+        payload = {
+            'phone_number': '010-1234-1234',
+            'password': 'test123'
+        }
+        user = get_user_model().objects.create_user(
+          **payload
+        )
+
+        other_client = APIClient()
+
+
+        res = other_client.post(TOKEN_URL, payload)
+        access_token = res.data['data'].get('access_token')
+
+        other_client.defaults['HTTP_AUTHORIZATION'] = f' Bearer {access_token}'
+
+        
+        delete_res = other_client.delete(product_patch_or_get_delete_url(content.id))
+
+        self.assertEqual(delete_res.status_code, 401)
+
+        patch_res = other_client.patch(product_patch_or_get_delete_url(content.id), {'name':'test'})
+
+        self.assertEqual(patch_res.status_code, 401)

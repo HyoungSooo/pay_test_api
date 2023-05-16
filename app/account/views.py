@@ -7,10 +7,10 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth.hashers import check_password
 from rest_framework.views import APIView
 from core.utils import create_response_msg
-
-from account.serializer import UserSerializer, UserLoginSerializer
-
+from account.serializer import UserSerializer, UserLoginSerializer,ProfileSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.core import serializers
+
 
 class CreateUserView(CreateAPIView):
 
@@ -29,6 +29,7 @@ class UserLoginAPI(APIView):
         permissions.AllowAny 
     ]
     serializer_class = UserLoginSerializer
+
     def post(self, request):
         phone_number = request.data.get('phone_number',None)
         password = request.data.get('password',None)
@@ -66,6 +67,91 @@ class LogoutApi(APIView):
 
         return response
     
+class ProfileApi(APIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    authentication_classes = (JWTAuthentication,)
+    serializer_class = ProfileSerializer
+
+    def get_queryset(self, pk):
+        try:
+            return get_user_model().objects.prefetch_related('profile_set').get(pk = pk)
+        except:
+            return False
+    
+
+    def post(self, request):
+        
+        profile = self.get_queryset(request.user.id)
+
+        if profile.profile_set.count():
+            return create_response_msg(status.HTTP_400_BAD_REQUEST, 'profile is already created')
+        
+        serializer = ProfileSerializer(data=request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(user=request.user)
+
+            return create_response_msg(status.HTTP_201_CREATED, 'profile create success', serializer.data)
+
+        return create_response_msg(status.HTTP_400_BAD_REQUEST, 'serialize error', data=request.data)
+    
+class UserAPI(APIView):
+    permission_classes = [
+        permissions.IsAuthenticated,
+    ]
+    authentication_classes = (JWTAuthentication,)
+
+    def get_queryset(self, pk):
+        try:
+            return get_user_model().objects.filter(id = pk).prefetch_related('profile_set').first()
+        except:
+            return False
+    
+    
+    def get(self,request):
+        data = self.get_queryset(request.user.id)
+
+        if not data:
+            return create_response_msg(status.HTTP_204_NO_CONTENT, 'create profile first')
+        
+        serializer = ProfileSerializer(data.profile_set.first())
+        
+        return create_response_msg(status.HTTP_200_OK, 'ok', serializer.data)
+  
+    def patch(self, request):
+        profile = self.get_queryset(request.user.id)
+
+        if not profile:
+            return create_response_msg(status.HTTP_204_NO_CONTENT, 'no profile')
+        
+        serializer = ProfileSerializer(profile.profile_set.first(), data = request.data)
+
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(user=request.user)
+            return create_response_msg(status.HTTP_200_OK, 'ok', data=serializer.data)
+
+        return create_response_msg(status.HTTP_400_BAD_REQUEST, 'serialize error', data=request.data)
+    
+    def post(self, request):
+        profile = self.get_queryset(request.user.id)
+
+        if not profile:
+            return create_response_msg(status.HTTP_204_NO_CONTENT, 'no profile')
+        
+        method = request.query_params.get('method', None)
+        
+        if method == 'plus':
+            profile.profile_set.first().plus_kindness()
+            return create_response_msg(status.HTTP_202_ACCEPTED, 'ok', data = {'kindness' : profile.profile_set.first().kindness})
+        elif method == 'minus':
+            profile.profile_set.first().minus_kindness()
+            return create_response_msg(status.HTTP_202_ACCEPTED, 'ok', data = {'kindness' : profile.profile_set.first().kindness})
+        else:
+            return create_response_msg(status.HTTP_400_BAD_REQUEST, 'please write the method in query params user/?method=<plus or minus>')
+
+
 
 class TestApi(APIView):
     authentication_classes = (JWTAuthentication,)

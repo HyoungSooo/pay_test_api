@@ -37,4 +37,23 @@ class User(AbstractUser):
     USERNAME_FIELD = 'phone_number'
 
     objects = UserManager()
+
+class Profile(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    nickname = models.CharField(max_length=20)
+    kindness = models.IntegerField(null=True,blank=True, default= 100)
+
+    def plus_kindness(self):
+        self.kindness += 1
+        self.save()
+        return self.kindness
     
+    def minus_kindness(self):
+        self.kindness -= 2
+        self.save()
+        return self.kindness
+    
+    def __str__(self) -> str:
+        return self.nickname
+    
+        

@@ -8,6 +8,7 @@ from django.db.models import Q
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from rest_framework.pagination import CursorPagination
+from drf_yasg.utils import swagger_auto_schema
 
 
 class ProductCursorPagination(CursorPagination):
@@ -37,11 +38,11 @@ class ProductApiView(APIView):
         serializer = ProductSerializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
-            serializer.save()
+            serializer.save(user=request.user)
 
             return create_response_msg(status.HTTP_201_CREATED, 'objects create success', serializer.data)
 
-        return create_response_msg(status.HTTP_500_INTERNAL_SERVER_ERROR, 'serialize error', data=request.data)
+        return create_response_msg(status.HTTP_400_BAD_REQUEST, 'serialize error', data=request.data)
 
 
 class ProductHandleApiView(APIView):
@@ -65,19 +66,26 @@ class ProductHandleApiView(APIView):
 
     def patch(self, request, pk):
         content = self.get_object(pk)
+
+        if request.user != content.user:
+            return create_response_msg(status.HTTP_401_UNAUTHORIZED, 'unauthorize')
+
         if not content:
             return create_response_msg(status.HTTP_204_NO_CONTENT, 'no content')
 
         serializer = ProductHandleSerializer(content, data=request.data)
 
-        if serializer.is_valid():
-            serializer.save()
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(user=self.request.user)
             return create_response_msg(status.HTTP_201_CREATED, 'ok', data=serializer.data)
 
-        return create_response_msg(status.HTTP_500_INTERNAL_SERVER_ERROR, 'serialize error', data=request.data)
+        return create_response_msg(status.HTTP_400_BAD_REQUEST, 'serialize error', data=request.data)
 
     def delete(self, request, pk):
         content = Product.objects.get(pk=pk)
+
+        if request.user != content.user:
+            return create_response_msg(status.HTTP_401_UNAUTHORIZED, 'unauthorize')
 
         content.delete()
 

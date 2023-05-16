@@ -48,6 +48,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework_simplejwt',
+    'drf_yasg',
+    'drf_spectacular',
 ]
 
 MIDDLEWARE = [
@@ -149,8 +151,8 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'EXCEPTION_HANDLER': 'api.utils.custom_exception_handler',
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
-
 
 AUTH_USER_MODEL = 'account.User'
 
@@ -165,4 +167,11 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
     'TOKEN_USER_CLASS': 'account.User',
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'My API',
+    'DESCRIPTION': 'My API description',
+    'VERSION': '1.0.0',
+    'SCHEMA_PATH_PREFIX': '/api',
 }

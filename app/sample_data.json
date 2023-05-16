@@ -3,153 +3,102 @@
     "category" : "음료",
     "name" : "슈크림 라떼",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 슈크림 라떼",
-    "size" : "S",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 슈크림 라떼"
   },
   {
     "category" : "음료",
     "name" : "초콜릿 라떼",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 초콜릿 라떼",
-    "size" : "S",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 초콜릿 라떼"
   },
   {
     "category" : "음료",
     "name" : "고구마 라떼",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 고구마 라떼",
-    "size" : "S",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 고구마 라떼"
   },
   {
     "category" : "음료",
     "name" : "연유 라떼",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 연유 라떼",
-    "size" : "S",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 연유 라떼"
   },
   {
     "category" : "음료",
     "name" : "딸기 라떼",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 딸기 라떼",
-    "size" : "S",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 딸기 라떼"
   },
   {
     "category" : "음료",
     "name" : "오렌지 라떼",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 오렌지 라떼",
-    "size" : "S",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 오렌지 라떼"
   },
   {
     "category" : "음료",
     "name" : "체리 라떼",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 체리 라떼",
-    "size" : "S",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 체리 라떼"
   },
   {
     "category" : "음료",
     "name" : "자두 라떼",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 자두 라떼",
-    "size" : "L",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 자두 라떼"
   },
   {
     "category" : "음료",
     "name" : "얼그레이 티",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 얼그레이 티",
-    "size" : "L",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 얼그레이 티"
   },
   {
     "category" : "음료",
     "name" : "레몬그라스 티",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 레몬그라스 티",
-    "size" : "L",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 레몬그라스 티"
   },
   {
     "category" : "음료",
     "name" : "애플시나몬 티",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 애플시나몬 티",
-    "size" : "L",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 애플시나몬 티"
   },
   {
     "category" : "음료",
     "name" : "바닐라 라떼",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 바닐라 라떼",
-    "size" : "S",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 바닐라 라떼"
   },
   {
     "category" : "음료",
     "name" : "아메리카노",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 어메리카노",
-    "size" : "S",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 어메리카노"
   },
   {
     "category" : "과자",
     "name" : "초콜릿 쿠키",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 초콜릿 쿠키",
-    "size" : "S",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 초콜릿 쿠키"
   },
   {
     "category" : "과자",
     "name" : "화이트 초콜릿 쿠키",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 화이트 초콜릿 쿠키",
-    "size" : "S",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 화이트 초콜릿 쿠키"
   },
   {
     "category" : "과자",
     "name" : "시나몬 쿠키",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 시나몬 쿠키",
-    "size" : "S",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 시나몬 쿠키"
   },
   {
     "category" : "샐러드",
     "name" : "닭가슴살 샐러드",
     "price" : 10000,
-    "cost" : 5000,
-    "des" : "달달한 닭가슴살 샐러드",
-    "size" : "S",
-    "expiration_date": "2023-04-30T13:26:47+09:00"
+    "des" : "달달한 닭가슴살 샐러드"
   }
 ]

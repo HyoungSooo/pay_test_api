@@ -1,4 +1,4 @@
-# pay_test_api
+# 키링 거래 사이트
 
 ```shell
 git clone <repositry>
@@ -25,10 +25,6 @@ class Command(BaseCommand):
         except :
             self.stdout.write(self.style.SUCCESS('call for once'))
 ```
-
-
-요구사항
-
 
 ### login
 
@@ -156,46 +152,6 @@ response
     "data": null
 }
 ```
-
-### Product schma
-```python
-class Product(models.Model):
-    category = models.CharField(max_length=30)
-    price = models.IntegerField()
-    cost = models.IntegerField()
-    name = models.CharField(max_length=20, unique=True)
-    des = models.TextField()
-    barcode = models.ImageField(upload_to='images/', blank=True)
-    expiration_date = models.DateTimeField(validators=[validate_date])
-    size = models.CharField(max_length=1, choices=SIZE)
-    initial_set = models.CharField(max_length=20, blank=True, null=True)
-
-    def __str__(self):
-        return str(self.name)
-
-    def save(self, make_barcode=True, *args, **kwargs):
-
-        self.initial_set = ''.join(korean_to_be_initial(self.name))
-
-        if make_barcode:
-
-            korea_unicode = '-'.join([str(ord(i)) for i in self.name])
-            code = barcode.get_barcode_class('code128')
-            ean = code(f'{self.price}{self.expiration_date}{self.id}{korea_unicode}{self.size}',
-                       writer=ImageWriter())
-            buffer = BytesIO()
-            ean.write(buffer)
-            title = self.name.replace(' ', '')
-            if os.path.isfile(f'/usr/src/app/images/{title}.png'):
-                os.remove(f'/usr/src/app/images/{title}.png')
-            self.barcode.save(f'{title}.png', File(buffer), save=False)
-        return super().save(*args, **kwargs)
-
-```
-
-요구사항에 나와있는 필수 조건들과, 초성 검색에 활용하기 위한 initial_set필드로 구성했습니다.
-save 함수를 오버라이딩해 자동으로 바코드 이미지와 이름의 초성을 생성하여 저장합니다.
-
 
 ### 상품 등록
 ```s
@@ -408,7 +364,7 @@ class ProductSearchView(APIView):
 
 ```
 
-django orm을 활용해 LIKE 검색을 구현했습니다. 초성으로 미리 바꿔 저장한 덕분에 쉽게 할 수있었습니다.
+django orm을 활용해 LIKE 검색기능을 제공합니다.
 
 
 ### 접근제한

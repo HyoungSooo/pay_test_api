@@ -5,41 +5,29 @@ from barcode.writer import ImageWriter
 from django.core.files.base import File
 from .utils import validate_date, korean_to_be_initial
 import os
+from django.contrib.auth import get_user_model
 
-SIZE = (
-    ('L', 'Large'),
-    ('S', 'Small')
-)
+
+class Category(models.Model):
+    category = models.CharField(max_length=20)
+
+    def __str__(self) -> str:
+        return self.category
 
 
 class Product(models.Model):
-    category = models.CharField(max_length=30)
+    user = models.ForeignKey(
+        get_user_model(), on_delete=models.CASCADE, related_name='product')
+    category = models.ForeignKey(Category, on_delete=models.PROTECT)
     price = models.IntegerField()
-    cost = models.IntegerField()
     name = models.CharField(max_length=20, unique=True)
     des = models.TextField()
-    barcode = models.ImageField(upload_to='images/', blank=True)
-    expiration_date = models.DateTimeField(validators=[validate_date])
-    size = models.CharField(max_length=1, choices=SIZE)
     initial_set = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
         return str(self.name)
 
-    def save(self, make_barcode=True, *args, **kwargs):
+    def save(self, *args, **kwargs):
 
         self.initial_set = ''.join(korean_to_be_initial(self.name))
-
-        if make_barcode:
-
-            korea_unicode = '-'.join([str(ord(i)) for i in self.name])
-            code = barcode.get_barcode_class('code128')
-            ean = code(f'{self.price}{self.expiration_date}{self.id}{korea_unicode}{self.size}',
-                       writer=ImageWriter())
-            buffer = BytesIO()
-            ean.write(buffer)
-            title = self.name.replace(' ', '')
-            if os.path.isfile(f'/usr/src/app/images/{title}.png'):
-                os.remove(f'/usr/src/app/images/{title}.png')
-            self.barcode.save(f'{title}.png', File(buffer), save=False)
         return super().save(*args, **kwargs)
