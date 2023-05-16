@@ -1,4 +1,4 @@
-# pay_test_api
+# django sample store api
 
 ```shell
 git clone <repositry>
