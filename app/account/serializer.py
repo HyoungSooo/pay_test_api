@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserModel
-        fields = ("id", "phone_number", "password", )
+        fields = ("phone_number", "password")
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
