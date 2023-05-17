@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
-
+import mimetypes
 import os
 from datetime import timedelta
 
@@ -32,6 +32,7 @@ DEBUG = False
 ALLOWED_HOSTS = ["*"]
 
 
+mimetypes.add_type("text/css", ".css", True)
 # Application definition
 
 INSTALLED_APPS = [
