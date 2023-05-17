@@ -13,3 +13,4 @@ drf-spectacular
 channels
 channels_redis
 django-cors-headers
+whitenoise
