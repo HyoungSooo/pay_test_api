@@ -18,6 +18,10 @@ class ConversationListSerializer(serializers.ModelSerializer):
         model = Conversation
         fields = ['initiator', 'receiver', 'last_message']
 
+    def get_last_message(self, instance):
+        message = instance.message_set.first()
+        return message
+
 
 class ConversationSerializer(serializers.ModelSerializer):
     initiator = UserSerializer()
