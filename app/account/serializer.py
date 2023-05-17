@@ -34,6 +34,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = serializers.ReadOnlyField(source='user.username')
+    nickname = serializers.CharField(required=False)
 
     class Meta:
         model = Profile

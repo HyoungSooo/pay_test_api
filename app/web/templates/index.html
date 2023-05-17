@@ -1,0 +1,189 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <title>Document</title>
+</head>
+<body>
+  <nav id="navbar" class="nav-bar">
+    <ul>
+      <h4 style = 'text-align: center;'>Sample Web Api</h4>
+      <li><a href="https://github.com/HyoungSooo/sample_web_store_api" class="nav-link">Github Page</a></li>
+      <li><a href="#introduccion" class="nav-link">Introduction</a></li>
+      <li><a href="#Python_Getting_Started" class="nav-link">Tech-Stack</a></li>
+      <li><a href="#Python_Syntax" class="nav-link">Problems</a></li>
+      <li><a href="#Python_Comments" class="nav-link">Future Works</a></li>
+      <li><a href="#Python_Variables" class="nav-link">Version</a></li>
+      <li><a href="#Assign_Multiple_Values" class="nav-link">API</a></li>
+    </ul>
+  </nav>
+  <main id="main-doc">
+    <section class="main-section" id="introduccion">
+      <header>Sample Web Api</header>
+
+      <h3>개발동기</h3>
+      <p>django, django-rest-framework, django-ninja를 활용하여 api를 개발할 때 수정이 쉽고 재사용 가능한 app를 출시하는게 목적</p>
+      <h3>제작기간</h3>
+      <p>2023.05.14~</p>
+      <h4>제약사항</h4>
+      <ul>
+        <li>모든 api 대하여 test code 작성</li>
+        <li>app들간 참조 최소화</li>
+        <li>DB 쿼리 최적화 (N+1 문제 등)</li>
+        <li>REST API 준수</li>
+      </ul>
+      <h3>Authentication</h3>
+      <h4>JWT vs Session</h4>
+      <h4>JWT</h4>
+      <ul>
+        <li>heaer, payload, signature로 구성</li>
+        <li>JWT만 확인해 Authorization하기 때문에 세션 DB에 저장할 필요가 없음</li>
+        <li>XSS공격에 취약함</li>
+      </ul>
+      <h4>Session</h4>
+      <ul>
+        <li>브라우저 종료시 만료</li>
+        <li>서버사이드에 저장되어 인증</li>
+        <li>사용자가 많아짐에 따라 DB와 서버를 확장해야함</li>
+      </ul>
+
+      이 앱은 JWT인증을 사용합니다. 사용자가 많아져 트래픽이 증가하면 세션인증에 비해 JWT인증이 더욱 빠르게 응답을 보내줄 수 있기 때문
+      <h3>App 구조</h3>
+      django의 가장 큰 장점은 Reusable app이라고 생각한다.
+      이미 여러 개발자들이 만들어둔 app을 활용하여 여러 기능들을 보다 빠르고 쉽게 구현해 낼 수 있기 때문이다.
+      <br>
+      <br>
+      여러 django 프로젝트를 진행하면서 의문이 생겼는데, 나는 여러가지 app을 만들면서 Reusable한 app을 만들고 있는가였다.
+      가령 account앱과 api앱이 있을 때, api앱에서 account의 모델 등을 가져오는 방식으로 개발을 하고 있었고 이는 api가 account에 종속되어 사용되어지고 있기 때문에 api는 Reusable한 app이 아니라고 생각이 들었다.
+      <br>
+      <br>
+      여러 프로젝트를 진행하면서 같은 기능을 구현해야 하는 경우가 여럿있었지만, 단 한번도 내가 만든 app을 그대로 가져다 쓴적이 없었던 것같다.
+      <br>
+      <br>
+      이번 프로젝트는 모든 app이 Reusable app으로 개발되어질 수 있게끔 하는게 목표이다.
+      <h3>주의사항</h3>
+      <a style ='font-size:18px' href="{% url 'swagger-ui' %}">Api Swagger</a>
+      <br>
+      <br>
+      <p>로그인, 로그아웃, 회원가입을 제외한 모든 api는 접근제한이 되어있습니다.</p>
+      <p>Authentication 탭에 발급 받은 access_token을 입력해주세요</p>
+    </section>
+    <section class="main-section" id="Python_Getting_Started">
+      <header>Tech Stack</header>
+
+      <div class="ficha">
+        <h4>Python</h4>
+        <p>version : 3.10.11</p>
+      </div>
+      <div class="ficha">
+        <h4>Docker</h4>
+        <p>Docker-compose Version : 3.7</p>
+      </div>
+      <div class="ficha">
+        <h4>Django</h4>
+        <p>version : 4.2.1</p>
+      </div>
+      <div class="ficha">
+        <h4>Django-rest-framework</h4>
+        <p>version : 3.14.0</p>
+      </div>
+      <div class="ficha">
+        <h4>Git, Github</h4>
+        <p>버전관리</p>
+      </div>
+      <div class="ficha">
+        <h4>MySQL</h4>
+        <p>version : 5.7</p>
+      </div>  
+    </section>
+    <section class="main-section" id="Python_Syntax">
+      <header>Problems</header>
+      <h3>MySQL Charactor_Set 변경 에러</h3>
+      <p>docker-compose로 django와 MySQL을 연동하여 사용하던 중, 한글이 저장이 안되는 문제</p>
+      <p>mysql.cnf를 바인드하여 설정을 바꿔보려 했으나 실패.</p>
+      <p>django runserver 실행 이전에 django에서 데이터 베이스에 접근하여 charactor_set을 변경하는 것으로 해결.</p>
+      <div class="ficha">
+        <h4>core/management/commnands/change_database_charactor_set.py</h4>
+        <code> 
+          class Command(BaseCommand):
+          <br>
+            &nbsp;&nbsp;help = '데이터베이스의 charactor set을 변경하는 커맨드.'
+            <br>
+            <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;cursor = connection.cursor()
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;cursor.execute('SHOW TABLES')
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;results=[]
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;for row in cursor.fetchall(): results.append(row)
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;for row in results: cursor.execute('ALTER TABLE %s CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci;' % (row[0]))
+
+            
+                &nbsp;&nbsp;&nbsp;&nbsp;self.stdout.write(self.style.SUCCESS('Successfully change database settings' ))
+        </code>
+        
+      </div>  
+
+    </section>
+    <section class="main-section" id="Python_Comments">
+      <header>Future Works</header>
+      <h4>V 0.0.1 기준</h4>
+      <ul>
+        <li><p>유저간 1:1채팅 기능</p></li>
+        <li><p><strike>리뷰 db table, api 구축</strike></p></li>
+        <li><p>평점 높은순, 낮은순으로 볼 수 있는 필터링 api</p></li>
+      </ul>
+      
+    </section>
+    <section class="main-section" id="Python_Variables">
+      <header>Version</header>
+      <h2>Change Logs</h2>
+      <h3>V 0.0.1</h3>
+      <ul>
+        <li><p>상품 추가, 조회, 삭제, 수정 api 구축</p></li>
+        <li><p>유저 회원가입 기능, 프로필 기능 구현</p></li>
+        <li><p>유저 프로필마다 친절도 조작 api 구현</p></li>
+        <li><p>검색 기능 구현, 초성 검색 기능 제공</p></li>
+      </ul>
+      
+    </section>
+    <section class="main-section" id="Assign_Multiple_Values"  style = 'padding-bottom: 50px;'>
+      <header>API</header>
+      <h3>API 문서</h3>
+      <a style ='font-size:18px' href="{% url 'swagger-ui' %}">Api Swagger</a>
+
+      <h4>공통 응답 양식</h4>
+      <div class="ficha">
+        <h4>Response</h4>
+        <code>
+          <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;{
+              <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"meta": {
+                  <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"code": code,
+                    <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"message": msg,
+                    <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},
+                <br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"data": data
+                <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;}
+            <br>
+        </code>
+      </div>
+      core/utils.py에 응답 함수가 정의되어 있습니다.
+
+    </section>
+  </main>
+
+</body>
+</html>

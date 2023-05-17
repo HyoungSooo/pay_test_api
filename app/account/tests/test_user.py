@@ -267,7 +267,7 @@ class PublicUserApiTests(TestCase):
         self.assertEqual(res.status_code, 202)
         self.assertEqual(res.data.get('data').get('kindness'), 101)
 
-        self.assertEqual(user.profile_set.first().kindness, 101)
+        self.assertEqual(user.profile.kindness, 101)
 
         res = self.client.post(
             user_profile() + '?method=minus', HTTP_AUTHORIZATION=f' Bearer {access_token}')
@@ -275,7 +275,7 @@ class PublicUserApiTests(TestCase):
         self.assertEqual(res.status_code, 202)
         self.assertEqual(res.data.get('data').get('kindness'), 99)
 
-        self.assertEqual(user.profile_set.first().kindness, 99)
+        self.assertEqual(user.profile.kindness, 99)
 
         res = self.client.post(
             user_profile() + '?method=unvalid', HTTP_AUTHORIZATION=f' Bearer {access_token}')

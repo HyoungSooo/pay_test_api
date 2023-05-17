@@ -39,7 +39,7 @@ class User(AbstractUser):
     objects = UserManager()
 
 class Profile(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     nickname = models.CharField(max_length=20)
     kindness = models.IntegerField(null=True,blank=True, default= 100)
 

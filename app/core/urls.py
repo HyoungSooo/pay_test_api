@@ -21,13 +21,14 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('account.urls')),
     path('api/', include('api.urls')),
+    path('', include('web.urls')),
 
 ]
 urlpatterns += [
-    # ...
     path('schema/', SpectacularAPIView.as_view(), name='schema'),
     path('docs/swagger/',
          SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('docs/redoc/',
          SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
+    path('conversations/', include('chatapi.urls')),
 ]

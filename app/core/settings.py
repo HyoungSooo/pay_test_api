@@ -45,11 +45,15 @@ INSTALLED_APPS = [
 
     'account',
     'api',
+    'web',
+    'chatapi',
 
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_yasg',
     'drf_spectacular',
+    'channels',
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -60,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 
@@ -175,3 +180,17 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SCHEMA_PATH_PREFIX': '/api',
 }
+CORS_ALLOW_ALL_ORIGINS = True
+
+ASGI_APPLICATION = "core.asgi.application"
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis-service', 6379)],
+        },
+    },
+}
+
+ALLOWED_HOSTS = ["*"]

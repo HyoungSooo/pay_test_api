@@ -9,7 +9,8 @@ from rest_framework.views import APIView
 from core.utils import create_response_msg
 from account.serializer import UserSerializer, UserLoginSerializer,ProfileSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from django.core import serializers
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
+from drf_spectacular.types import OpenApiTypes
 
 
 class CreateUserView(CreateAPIView):
@@ -67,7 +68,7 @@ class LogoutApi(APIView):
 
         return response
     
-class ProfileApi(APIView):
+class ProfileCreateApi(APIView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
@@ -76,16 +77,15 @@ class ProfileApi(APIView):
 
     def get_queryset(self, pk):
         try:
-            return get_user_model().objects.prefetch_related('profile_set').get(pk = pk)
+            return get_user_model().objects.get(pk = pk).profile
         except:
             return False
-    
-
+        
     def post(self, request):
         
         profile = self.get_queryset(request.user.id)
 
-        if profile.profile_set.count():
+        if profile:
             return create_response_msg(status.HTTP_400_BAD_REQUEST, 'profile is already created')
         
         serializer = ProfileSerializer(data=request.data)
@@ -97,15 +97,16 @@ class ProfileApi(APIView):
 
         return create_response_msg(status.HTTP_400_BAD_REQUEST, 'serialize error', data=request.data)
     
-class UserAPI(APIView):
+class UserProfileAPI(APIView):
     permission_classes = [
         permissions.IsAuthenticated,
     ]
     authentication_classes = (JWTAuthentication,)
+    serializer_class = ProfileSerializer
 
     def get_queryset(self, pk):
         try:
-            return get_user_model().objects.filter(id = pk).prefetch_related('profile_set').first()
+            return get_user_model().objects.get(id= pk).profile
         except:
             return False
     
@@ -114,42 +115,46 @@ class UserAPI(APIView):
         data = self.get_queryset(request.user.id)
 
         if not data:
-            return create_response_msg(status.HTTP_204_NO_CONTENT, 'create profile first')
+            return create_response_msg(status.HTTP_400_BAD_REQUEST, 'create profile first')
         
-        serializer = ProfileSerializer(data.profile_set.first())
+        serializer = ProfileSerializer(data)
+        data = {'kindness': request.user.profile.kindness}
+        data.update(serializer.data)
+        data['user'] = request.user.id
         
-        return create_response_msg(status.HTTP_200_OK, 'ok', serializer.data)
-  
+        return create_response_msg(status.HTTP_200_OK, 'ok', data)
     def patch(self, request):
         profile = self.get_queryset(request.user.id)
 
         if not profile:
-            return create_response_msg(status.HTTP_204_NO_CONTENT, 'no profile')
+            return create_response_msg(status.HTTP_400_BAD_REQUEST, 'no profile')
         
-        serializer = ProfileSerializer(profile.profile_set.first(), data = request.data)
+        serializer = ProfileSerializer(profile, data = request.data)
 
         if serializer.is_valid(raise_exception=True):
             serializer.save(user=request.user)
+            serializer.data['kindness'] = request.user.profile.kindness
             return create_response_msg(status.HTTP_200_OK, 'ok', data=serializer.data)
 
         return create_response_msg(status.HTTP_400_BAD_REQUEST, 'serialize error', data=request.data)
-    
+    @extend_schema(parameters=[OpenApiParameter(name='method', description='method, plus or minus',
+                                                required=True, type=str)])
     def post(self, request):
         profile = self.get_queryset(request.user.id)
 
         if not profile:
-            return create_response_msg(status.HTTP_204_NO_CONTENT, 'no profile')
+            return create_response_msg(status.HTTP_400_BAD_REQUEST, 'no profile')
         
         method = request.query_params.get('method', None)
         
         if method == 'plus':
-            profile.profile_set.first().plus_kindness()
-            return create_response_msg(status.HTTP_202_ACCEPTED, 'ok', data = {'kindness' : profile.profile_set.first().kindness})
+            profile.plus_kindness()
+            return create_response_msg(status.HTTP_202_ACCEPTED, 'ok', data = {'kindness' : profile.kindness, 'user' : profile.user.id})
         elif method == 'minus':
-            profile.profile_set.first().minus_kindness()
-            return create_response_msg(status.HTTP_202_ACCEPTED, 'ok', data = {'kindness' : profile.profile_set.first().kindness})
+            profile.minus_kindness()
+            return create_response_msg(status.HTTP_202_ACCEPTED, 'ok', data = {'kindness' : profile.kindness, 'user' : profile.user.id})
         else:
-            return create_response_msg(status.HTTP_400_BAD_REQUEST, 'please write the method in query params user/?method=<plus or minus>')
+            return create_response_msg(status.HTTP_400_BAD_REQUEST, 'please write the method in query params user method=<plus or minus>')
 
 
 

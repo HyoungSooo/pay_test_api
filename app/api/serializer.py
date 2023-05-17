@@ -1,9 +1,9 @@
 from rest_framework import serializers
-from .models import Product, Category
+from .models import Product, Category, Review
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
+    user = serializers.ReadOnlyField(source='user.nickname')
     category = serializers.CharField()
 
     class Meta:
@@ -35,3 +35,20 @@ class ProductHandleSerializer(serializers.Serializer):
         instance.save()
 
         return instance
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.CharField(source='user.nickname', read_only=True)
+    product = serializers.CharField(source='product.username', read_only=True)
+    created_at = serializers.DateTimeField(
+        required=False, source='review.created_at', read_only=True)
+
+    class Meta:
+        model = Review
+        fields = ('product', 'user', 'rating',
+                  'title', 'content', 'created_at')
+
+    class ReviewGETSerializer(serializers.ModelSerializer):
+        class Meta:
+            model = Review
+            fields = '__all__'
