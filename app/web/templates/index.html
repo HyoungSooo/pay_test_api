@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{% static '/css/main.css' %}" type="text/css">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}" type="text/css">
   <title>Document</title>
 </head>
 <body>
@@ -35,6 +35,7 @@
         <li>app들간 참조 최소화</li>
         <li>DB 쿼리 최적화 (N+1 문제 등)</li>
         <li>REST API 준수</li>
+        <li>Github Action을 통한 배포 자동화</li>
       </ul>
       <h3>Authentication</h3>
       <h4>JWT vs Session</h4>
@@ -128,7 +129,13 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;self.stdout.write(self.style.SUCCESS('Successfully change database settings' ))
         </code>
         
-      </div>  
+      </div>
+      
+      <h3>white noise를 통한 css MINE error 해결</h3>
+      <p>static 파일을 제공하기에 있어 MINE error 문제 발생.</p>
+      <p>white noise 라이브러리를 설치 후 미들웨어에 추가함으로써 해결</p>
+      <a href="https://stackoverflow.com/questions/35557129/css-not-loading-wrong-mime-type-django">stackoverflow</a>
+
 
     </section>
     <section class="main-section" id="Python_Comments">
