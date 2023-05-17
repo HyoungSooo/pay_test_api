@@ -15,7 +15,7 @@ RUN apt-get install gcc default-libmysqlclient-dev -y
 # install dependencies
 RUN pip install -U pip setuptools wheel
 RUN pip install --upgrade pip
-COPY ./requirements.txt .
+COPY requirements.txt .
 RUN pip install -r requirements.txt --no-cache-dir
 
 # copy project
