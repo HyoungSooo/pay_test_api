@@ -2,7 +2,7 @@ name: Deploy to cloudtype
 on:
   push:
     branches:
-      - master
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -23,11 +23,11 @@ jobs:
           yaml: >
             name: sample-web-store-api
 
-            app: dockerfile.v1
+            app: dockerfile
 
             options:
               ports: "3000"
-              dockerfile: app/Dockerfile
+              dockerfile: app/Dockerfile.v1
               commands: |-
                 python manage.py makemigrations 
                 python manage.py migrate
