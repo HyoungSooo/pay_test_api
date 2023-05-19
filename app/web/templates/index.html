@@ -66,6 +66,11 @@
       <br>
       <br>
       이번 프로젝트는 모든 app이 Reusable app으로 개발되어질 수 있게끔 하는게 목표이다.
+      <br>
+      <h3>django chanels, web socket 통신을 활용한 1:1 실시간 채팅기능</h3>
+      <br>
+
+
       <h3>주의사항</h3>
       <a style ='font-size:18px' href="{% url 'swagger-ui' %}">Api Swagger</a>
       <br>
@@ -135,6 +140,14 @@
       <p>static 파일을 제공하기에 있어 MINE error 문제 발생.</p>
       <p>white noise 라이브러리를 설치 후 미들웨어에 추가함으로써 해결</p>
       <a href="https://stackoverflow.com/questions/35557129/css-not-loading-wrong-mime-type-django">stackoverflow</a>
+      <br>
+      <br>
+
+      <h3>django bulk_create method</h3>
+      <p>sample 데이터를 json파일 형식으로 저장한 뒤 생성하는데 시간이 많이 소요되는 문제가 발생</p>
+      <p>django orm에서 create 메소드를 실행 시킬때 db에 쿼리를 날리기 때문에 시간소요가 많이 발생.</p>
+      <p>bulk_create 메소드를 활용하면 하나의 쿼리로 여러개의 객체를 생성할 수 있기때문에 효율적으로 처리 가능.</p>
+
 
 
     </section>
@@ -144,6 +157,7 @@
       <h4>V 0.0.2</h4>
       <ul>
         <li><p>가장 많이 조회된 물품 상단에 노출 기능(검색기능 수정)</p></li>
+        <li><p>찜, 장바구니 기능</p></li>
       </ul>
       <h4>V 0.0.1</h4>
       <ul>
