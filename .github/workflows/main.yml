@@ -23,7 +23,7 @@ jobs:
           yaml: >
             name: sample-web-store-api
 
-            app: dockerfile
+            app: dockerfile.v1
 
             options:
               ports: "3000"

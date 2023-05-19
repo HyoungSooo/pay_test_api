@@ -33,9 +33,9 @@ RUN chmod 755 ./sql_config/conf.d/mysql.cnf
 # Entrypoint dependencies
 RUN apt-get install netcat -y
 
-USER user
+USER root
 
-RUN chown -R user:user /app
+# RUN chown -R user:user /app
 
 # run entrypoint.sh
 ENTRYPOINT ["bash", "/usr/local/bin/docker-entrypoint.sh"]
